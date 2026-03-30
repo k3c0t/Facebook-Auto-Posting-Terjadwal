@@ -18,20 +18,24 @@ Dilengkapi dengan integrasi **Google Gemini AI** untuk menghasilkan *caption* ya
 
 ---
 
+## ⚙️ Konfigurasi (`main.py`)
+
+Sebelum menjalankan bot, Anda dapat menyesuaikan pengaturan utama di dalam file `main.py`. Berikut adalah blok konfigurasi yang tersedia beserta penjelasan fungsi dari masing-masing variabel:
+
+```python
 # ===================== KONFIGURASI UMUM =====================
 
-COOKIE_FILE = "cookies.json" # cookies ambil untuk login auth
-HISTORY_FILE = "history.json" # history posting agar tidak double post teks dan media yang sama
-TEXTS_FILE = "texts.txt" # opsi isi teks untuk caption jika tidak pakai api AI
-MEDIA_DIR = "media" # list foto / video untuk di unggah jika hanya teks saja kosongkan
+COOKIE_FILE  = "cookies.json"  # Cookies akun untuk login (Autentikasi)
+HISTORY_FILE = "history.json"  # Riwayat postingan (Anti-Spam / Anti-Double Post)
+TEXTS_FILE   = "texts.txt"     # Daftar teks/caption manual (Fallback AI)
+MEDIA_DIR    = "media"         # Folder penyimpanan file foto/video
 
-SCHEDULE = ["05:40", "15:00", "21:00"] # jadwal waktu untuk posting bisa di tambah
+SCHEDULE     = ["05:40", "15:00", "21:00"] # Jadwal eksekusi posting (Format 24 Jam)
 
 # ===================== KONFIGURASI AI =======================
 
 # Masukkan API Key Gemini Anda di bawah ini
-GEMINI_API_KEY = "API-KEY-GEMINI" 
-
+GEMINI_API_KEY = "API-KEY-GEMINI"
 
 
 ## ⚙️ Persyaratan Sistem
