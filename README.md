@@ -8,8 +8,9 @@ Dilengkapi dengan integrasi **Google Gemini AI** untuk menghasilkan *caption* ya
 
 ## 🖥️ Tampilan Bot Saat Berjalan
 
-![Tampilan Professional CLI Log Bot saat Sukses Posting](contoh.png)
-
+<p align="center">
+  <img src="contoh.png" alt="FB Auto Poster CLI Pro in Action" width="80%">
+</p>
 *Gambar di atas menunjukkan log visual bot yang rapi dan berwarna saat mengeksekusi jadwal posting.*
 
 ---
