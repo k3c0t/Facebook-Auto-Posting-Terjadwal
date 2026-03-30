@@ -6,6 +6,17 @@ Dilengkapi dengan integrasi **Google Gemini AI** untuk menghasilkan *caption* ya
 
 ---
 
+## 🖥️ Tampilan Bot Saat Berjalan
+
+![Tampilan Professional CLI Log Bot saat Sukses Posting](contoh.png)
+
+*Gambar di atas menunjukkan log visual bot yang rapi dan berwarna saat mengeksekusi jadwal posting.*
+
+---
+
+
+---
+
 ## ✨ Fitur Utama
 
 - **🧠 AI Caption Generator**: Membuat caption unik secara otomatis menggunakan Gemini AI sesuai dengan waktu sistem (sapaan pagi/siang/sore/malam).
