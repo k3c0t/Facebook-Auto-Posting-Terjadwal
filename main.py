@@ -17,7 +17,7 @@ HISTORY_FILE = "history.json"
 TEXTS_FILE = "texts.txt"
 MEDIA_DIR = "media"
 
-SCHEDULE = ["01:38", "15:00", "21:00"]
+SCHEDULE = ["00:50", "15:00", "21:00"]
 
 # ===================== KONFIGURASI AI =======================
 
@@ -245,10 +245,30 @@ def do_post():
 
         if text:
             log("INFO", "Mengetik status...")
-            box = driver.find_element(By.XPATH, "//div[@role='dialog']//div[@contenteditable='true']")
-            driver.execute_script("arguments[0].focus();", box)
-            human_type(box, text)
-            time.sleep(2)
+            
+            # Menggunakan XPath yang secara spesifik menargetkan Lexical Editor terbaru Facebook
+            xpath_lexical = "//div[@data-lexical-editor='true' and @contenteditable='true' and @role='textbox']"
+            
+            try:
+                # Tunggu maksimal 10 detik sampai kotak teks benar-benar muncul dan siap
+                box = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, xpath_lexical))
+                )
+                
+                log("INFO", "Kotak teks Lexical Editor ditemukan!")
+                
+                # Fokus ke kotak teks sebelum mengetik
+                driver.execute_script("arguments[0].focus();", box)
+                time.sleep(1)
+                
+                # Mulai mengetik
+                human_type(box, text)
+                time.sleep(2)
+                
+            except Exception as e:
+                log("ERROR", "Gagal menemukan kotak teks baru. Pastikan pop-up sudah terbuka sempurna.")
+                driver.save_screenshot("error_typing_lexical.png")
+                return
 
         if media_file:
             log("INFO", "Mengunggah media...")
@@ -261,14 +281,45 @@ def do_post():
             else:
                 log("WARNING", "Input file media tidak ditemukan di halaman.")
 
-        try:
-            next_btn_xpath = "//div[@role='dialog']//div[@role='button' and (.//span[text()='Berikutnya'] or .//span[text()='Next'])]"
-            next_btn = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, next_btn_xpath)))
-            driver.execute_script("arguments[0].click();", next_btn)
-            log("INFO", "Tombol 'Berikutnya' ditekan.")
-            time.sleep(2) 
-        except:
-            pass 
+        # Logika dinamis untuk melewati wizard video/Reels Facebook
+        log("INFO", "Mengecek tahapan wizard / editor Reels...")
+        
+        # Jeda tambahan sebelum mulai mencari tombol agar animasi upload pertama selesai
+        time.sleep(3)
+        
+        for i in range(3):
+            try:
+                next_btn_xpath = "//div[@role='button' and (@aria-label='Berikutnya' or @aria-label='Next' or .//span[text()='Berikutnya'] or .//span[text()='Next'])]"
+                
+                # CARI SEMUA TOMBOL (bukan hanya 1)
+                buttons = driver.find_elements(By.XPATH, next_btn_xpath)
+                
+                clicked = False
+                for btn in buttons:
+                    # Cek apakah tombol ini benar-benar sedang tampil di layar Anda
+                    if btn.is_displayed():
+                        try:
+                            # Coba klik menggunakan JavaScript
+                            driver.execute_script("arguments[0].click();", btn)
+                            clicked = True
+                            log("INFO", f"Tombol 'Berikutnya' (Tahap {i+1}) ditekan.")
+                            break # Hentikan pencarian tombol jika sudah berhasil diklik
+                        except Exception as e:
+                            continue # Jika gagal klik, coba tombol yang lain
+                            
+                if not clicked:
+                    # Jika tidak ada satupun tombol Berikutnya yang terlihat di layar
+                    log("INFO", "Tidak ada tombol 'Berikutnya' lagi di layar. Bersiap memposting...")
+                    break 
+                
+                # Jeda WAJIB untuk menunggu transisi animasi halaman selesai
+                time.sleep(4) 
+                
+            except Exception as e:
+                log("INFO", "Selesai melewati tahapan wizard.")
+                break 
+            
+            
 
         log("INFO", "Menekan tombol Posting...")
         post_btn_xpath = "//div[@role='dialog']//div[@role='button' and (@aria-label='Posting' or @aria-label='Post' or @aria-label='Kirim' or .//span[text()='Post' or text()='Posting'])]"
